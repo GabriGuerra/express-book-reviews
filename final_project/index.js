@@ -1,6 +1,5 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
-const session = require('express-session')
+const session = require('express-session');
 const customer_routes = require('./router/auth_users.js').authenticated;
 const genl_routes = require('./router/general.js').general;
 
@@ -8,15 +7,23 @@ const app = express();
 
 app.use(express.json());
 
-app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUninitialized: true}))
+// Middleware de sessão para usuários clientes
+// Session middleware for customer users
+app.use("/customer", session({
+    secret: "fingerprint_customer",
+    resave: true,
+    saveUninitialized: true
+}));
 
-app.use("/customer/auth/*", function auth(req,res,next){
-//Write the authenication mechanism here
-});
- 
-const PORT =5000;
-
+// Rotas para clientes registrados
+// Routes for registered customers
 app.use("/customer", customer_routes);
+
+// Rotas gerais públicas
+// General public routes
 app.use("/", genl_routes);
 
-app.listen(PORT,()=>console.log("Server is running"));
+// Inicialização do servidor
+// Server startup
+const PORT = 5000;
+app.listen(PORT, () => console.log("Server is running"));
